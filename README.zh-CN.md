@@ -4,8 +4,10 @@
 
 [![License: MIT](https://img.shields.io/github/license/songoao25/dsh-chatgpt-subscription)](https://github.com/songoao25/dsh-chatgpt-subscription/blob/main/LICENSE)
 [![Release](https://img.shields.io/github/v/release/songoao25/dsh-chatgpt-subscription)](https://github.com/songoao25/dsh-chatgpt-subscription/releases)
-[![Last commit](https://img.shields.io/github/last-commit/songoao25/dsh-chatgpt-subscription)](https://github.com/songoao25/dsh-chatgpt-subscription)
 [![CI](https://img.shields.io/github/actions/workflow/status/songoao25/dsh-chatgpt-subscription/ci.yml)](https://github.com/songoao25/dsh-chatgpt-subscription/actions)
+[![Last Commit](https://img.shields.io/github/last-commit/songoao25/dsh-chatgpt-subscription)](https://github.com/songoao25/dsh-chatgpt-subscription)
+[![Stars](https://img.shields.io/github/stars/songoao25/dsh-chatgpt-subscription)](https://github.com/songoao25/dsh-chatgpt-subscription)
+[![Dependabot](https://img.shields.io/badge/dependabot-enabled-025e8c?logo=dependabot)](https://github.com/songoao25/dsh-chatgpt-subscription/security/dependabot)
 
 一个 [DeepSeek Harness](https://github.com/deepseek-ai)（DSH）插件：**用官方 OAuth 一键绑定你的 ChatGPT 账号**，在 DSH 里直接使用 ChatGPT 模型对话，消耗你的 ChatGPT Plus/Pro 订阅额度。
 

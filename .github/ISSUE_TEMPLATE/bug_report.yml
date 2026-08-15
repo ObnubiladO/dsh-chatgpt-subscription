@@ -1,0 +1,34 @@
+name: Bug report
+description: 报告一个 Bug
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: textarea
+    id: describe
+    attributes:
+      label: 问题描述
+      description: 清晰描述 Bug 的表现
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 一步步怎么触发这个问题
+      placeholder: |
+        1. 重启 dsh web
+        2. 打开 设置 → 订阅
+        3. 点击「授权登录」
+        4. 看到……
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+      description: 你期望发生什么
+  - type: textarea
+    id: env
+    attributes:
+      label: 环境信息
+      description: DSH 版本、操作系统、ChatGPT 套餐（Plus/Pro）等
