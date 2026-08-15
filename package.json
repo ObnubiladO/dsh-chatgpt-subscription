@@ -30,12 +30,14 @@
     "lib",
     "cordis.patch.yml",
     "README.md",
+    "README.zh-CN.md",
+    "docs/INSTALL.md",
     "LICENSE"
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
     "prepack": "npm run build",
-    "test": "node ../tests/run-all.mjs"
+    "test": "node tests/run-all.mjs"
   },
   "dsh": {
     "bundle": {

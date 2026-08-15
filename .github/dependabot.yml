@@ -1,0 +1,14 @@
+# Dependabot — 依赖自动更新
+# 本项目零运行时依赖（仅 react peer），此配置用于跟踪构建/测试工具链。
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
