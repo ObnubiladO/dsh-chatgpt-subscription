@@ -77,12 +77,14 @@ const fnNames = [
   'decodeBase64Url', 'decodeJwtExp', 'codexExpiresAt', 'codexNeedsRefresh',
   'readCodexAuthFile', 'writeAuthJson', 'readBindFlag', 'writeBindFlag', 'clearBindFlag',
   'createPkcePair', 'buildAuthorizeUrl', 'parseCallbackUrl', 'oauthCallbackPort',
+  'codexAccountIdFromJwt', 'buildOAuthAuthObject',
 ]
 const mod = extractModule(fnNames)
 const {
   decodeBase64Url, decodeJwtExp, codexExpiresAt, codexNeedsRefresh,
   readCodexAuthFile, writeAuthJson, readBindFlag, writeBindFlag, clearBindFlag,
   createPkcePair, buildAuthorizeUrl, parseCallbackUrl, oauthCallbackPort,
+  codexAccountIdFromJwt, buildOAuthAuthObject,
 } = mod
 
 // 环境变量隔离（测试前设置）
@@ -166,6 +168,34 @@ function makeJwt(claims) {
   check('parseCallbackUrl hash 分支', cb2.code, 'hashcode')
   check('parseCallbackUrl hash state', cb2.state, 's2')
   check('oauthCallbackPort env 覆盖', oauthCallbackPort(), 1456)
+}
+
+// ---- 测试 5b：account_id 提取 / auth 对象构造 ----
+{
+  // 构造含官方账号声明的 JWT
+  const accountClaim = 'https://api.openai.com/auth'
+  const jwt = makeJwt({ [accountClaim]: { chatgpt_account_id: 'acc-123' } })
+  check('codexAccountIdFromJwt 提取成功', codexAccountIdFromJwt(jwt), 'acc-123')
+  check('codexAccountIdFromJwt 非 JWT → null', codexAccountIdFromJwt('x.y.z'), null)
+  check('codexAccountIdFromJwt 空 → null', codexAccountIdFromJwt(''), null)
+  check('codexAccountIdFromJwt 缺声明 → null', codexAccountIdFromJwt(makeJwt({ sub: 'x' })), null)
+
+  const nowIso = '2026-08-16T00:00:00.000Z'
+  const exchange = { access_token: jwt, refresh_token: 'ref-new', id_token: 'id-new' }
+  const built = buildOAuthAuthObject(null, exchange, nowIso)
+  check('buildOAuthAuthObject 全新骨架 auth_mode', built.auth_mode, 'oauth')
+  check('buildOAuthAuthObject access_token', built.tokens.access_token, jwt)
+  check('buildOAuthAuthObject refresh_token', built.tokens.refresh_token, 'ref-new')
+  check('buildOAuthAuthObject id_token', built.tokens.id_token, 'id-new')
+  check('buildOAuthAuthObject account_id 提取', built.tokens.account_id, 'acc-123')
+  check('buildOAuthAuthObject last_refresh', built.last_refresh, nowIso)
+
+  // 已有结构保留 + refresh 缺失不覆盖旧值
+  const existing = { auth_mode: 'oauth', OPENAI_API_KEY: 'sk-old', tokens: { account_id: 'acc-old', refresh_token: 'ref-old' }, last_refresh: '2026-08-01T00:00:00.000Z' }
+  const built2 = buildOAuthAuthObject(existing, { access_token: jwt, refresh_token: null, id_token: null }, nowIso)
+  check('buildOAuthAuthObject 保留 OPENAI_API_KEY', built2.OPENAI_API_KEY, 'sk-old')
+  check('buildOAuthAuthObject refresh 缺失保留旧值', built2.tokens.refresh_token, 'ref-old')
+  check('buildOAuthAuthObject account_id 更新为新', built2.tokens.account_id, 'acc-123')
 }
 
 // ---- 测试 6：安全静态断言 ----
