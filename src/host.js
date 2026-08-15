@@ -14,7 +14,8 @@ const CODEX_OAUTH_CLIENT_ID = 'app_EMoamEEZ73f0CkXaXp7hrann' // OpenAI OAuth 公
 const CODEX_AUTH_FILE = process.env.DSH_CHATGPT_AUTH || join(homedir(), '.codex', 'auth.json')
 const OAUTH_CALLBACK_TIMEOUT_MS = Number(process.env.DSH_CHATGPT_OAUTH_TIMEOUT_MS) > 0 ? Number(process.env.DSH_CHATGPT_OAUTH_TIMEOUT_MS) : 5 * 60 * 1000
 const OAUTH_CALLBACK_PATH = '/auth/callback'
-const CODEX_JWT_ACCOUNT_CLAIM = 'https://api.openai.com/auth'
+const CODEX_JWT_ACCOUNT_CLAIM = 'https://api.openai.com/auth' // access_token JWT payload 里账号声明的命名空间键（wham 账号提取用）
+const OAUTH_SCOPE = 'openid profile email offline_access' // 官方授权 scope（与 pi-ai/Codex CLI 一致；offline_access 换 refresh_token）
 
 // ---------- 绑定标记（严格官方模式唯一事实） ----------
 // 语义：只有本插件 OAuth 绑定成功写入的标记存在且 bound=true 时，才注入令牌到 DSH 凭据。
