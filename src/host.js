@@ -646,9 +646,13 @@ export default {
     ctx.inject(['webServer'], function (webCtx) {
       try {
         const dispose = webCtx.webServer.register({
+          kind: 'prefix',
           path: ROUTE_PREFIX,
-          handler: async function (req, res, path) {
+          handler: async function (req, res) {
             try {
+              // handler 只收 (req, res) 两参；pathname 须从 req.url 自行解析（官方 webServer 契约）
+              const url = new URL(req.url || '/', 'http://localhost');
+              const path = url.pathname;
               if (!path.startsWith(ROUTE_PREFIX + '/')) { respond(res, 404, { error: 'not found' }); return; }
               const method = decodeURIComponent(path.slice(ROUTE_PREFIX.length + 1));
               if (!Object.hasOwn(ROUTES, method)) { respond(res, 404, { error: 'unknown method: ' + method }); return; }
