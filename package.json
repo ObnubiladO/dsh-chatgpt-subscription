@@ -1,0 +1,54 @@
+{
+  "name": "dsh-chatgpt-subscription",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness (DSH) 插件：用官方 OAuth 一键绑定 ChatGPT 订阅（Codex），在 DSH 内直接使用 ChatGPT 模型对话（消耗 ChatGPT Plus/Pro 订阅额度），并在设置侧边栏「订阅」页展示绑定状态与剩余额度。",
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "chatgpt",
+    "codex",
+    "subscription",
+    "oauth",
+    "plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/songoao25/dsh-chatgpt-subscription.git"
+  },
+  "homepage": "https://github.com/songoao25/dsh-chatgpt-subscription",
+  "author": "songoao25",
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "prepack": "npm run build",
+    "test": "node ../tests/run-all.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime"
+      ]
+    }
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  }
+}
