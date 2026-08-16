@@ -10,13 +10,24 @@ import { createHash, randomBytes } from 'node:crypto'
 const root = dirname(fileURLToPath(new URL('../package.json', import.meta.url)))
 const src = readFileSync(join(root, 'src', 'host.js'), 'utf8')
 
-// ---- 简易断言 ----
+// ---- 简易断言（脱敏：涉及 token/auth/secret 的断言失败时不打印实际值）----
 let pass = 0
 let fail = 0
 const failures = []
+function isSensitive(v) {
+  return /token|auth|secret|access|refresh|password|sk-/i.test(String(v))
+}
 function check(name, actual, expected) {
   const ok = JSON.stringify(actual) === JSON.stringify(expected)
-  if (ok) { pass++ } else { failures.push(`${name}: 期望 ${JSON.stringify(expected)} 实际 ${JSON.stringify(actual)}`); fail++ }
+  if (ok) {
+    pass++
+  } else {
+    // 若 expected 或 actual 触及 token/认证字段，失败详情中隐藏实际值（测试仅用模拟数据，
+    // 但仍不让任何疑似敏感串进入日志，避免 code scanning 告警 js/clear-text-logging）。
+    const act = (isSensitive(expected) || isSensitive(actual)) ? '[REDACTED]' : JSON.stringify(actual)
+    failures.push(`${name}: 期望 ${JSON.stringify(expected)} 实际 ${act}`)
+    fail++
+  }
 }
 
 // ---- 提取「常量 + 纯函数」为一个共享作用域 ----
