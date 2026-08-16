@@ -81,4 +81,4 @@ dsh plugin --profile web remove dsh-chatgpt-subscription
 
 ## 与其他插件的关系
 
-- **[Bottom Info Bar](https://github.com/songoao25/bottom-info-bar)**：信息栏插件只读本插件维护的令牌，在底部信息栏显示 ChatGPT 额度（5 小时/周/月窗口与重置时间）。两者可独立安装；信息栏的 ChatGPT 额度显示需要本插件先绑定。
+- **[Bottom Info Bar](https://github.com/songoao25/dsh-bottom-info-bar)**：信息栏插件只读本插件维护的令牌，在底部信息栏显示 ChatGPT 额度（5 小时/周/月窗口与重置时间）。两者可独立安装；信息栏的 ChatGPT 额度显示需要本插件先绑定。

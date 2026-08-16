@@ -20,7 +20,7 @@
 - **DSH 内使用 ChatGPT 模型** —— 绑定后，模型切换器出现提供商 **ChatGPT** 的模型（如 `gpt-5.6-terra` / `gpt-5.5` / `gpt-5.4`），选择即对话，消耗订阅额度。
 - **令牌看护** —— 令牌临近过期自动续期（JWT 感知，45 分钟提前量）并注入 DSH 凭据；启动即跑一次 + 每 30 分钟维护；失败保留上次正常状态，不崩溃。
 - **绑定状态页** —— **设置 → 订阅**页展示 已绑定/未绑定、令牌有效期与剩余时间，提供「授权登录 / 重新授权 / 解绑」操作。
-- **与 [Bottom Info Bar](https://github.com/songoao25/bottom-info-bar) 配套** —— 本插件负责绑定与令牌维护；信息栏插件读取令牌显示 ChatGPT 额度（5 小时 / 周 / 月窗口与重置时间）。本插件可单独使用，但信息栏的 ChatGPT 额度显示依赖本插件。
+- **与 [Bottom Info Bar](https://github.com/songoao25/dsh-bottom-info-bar) 配套** —— 本插件负责绑定与令牌维护；信息栏插件读取令牌显示 ChatGPT 额度（5 小时 / 周 / 月窗口与重置时间）。本插件可单独使用，但信息栏的 ChatGPT 额度显示依赖本插件。
 
 ## 前置条件
 
@@ -90,7 +90,7 @@ cd dsh-chatgpt-subscription
 不会。插件写入同一个标准位置 `~/.codex/auth.json` 并保留其结构；解绑也不删除它。
 
 **问：能看到我的额度吗？**
-安装配套插件 [Bottom Info Bar](https://github.com/songoao25/bottom-info-bar)——它读取本插件维护的令牌，在底部信息栏显示 ChatGPT 额度（剩余百分比与重置时间）。
+安装配套插件 [Bottom Info Bar](https://github.com/songoao25/dsh-bottom-info-bar)——它读取本插件维护的令牌，在底部信息栏显示 ChatGPT 额度（剩余百分比与重置时间）。
 
 ## 许可证
 

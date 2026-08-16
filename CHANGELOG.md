@@ -21,7 +21,7 @@
 ### Fixed
 
 - **缺失 `OAUTH_SCOPE` 常量**：`buildAuthorizeUrl` 引用了从未定义的 `OAUTH_SCOPE`，会导致点击授权时 `ReferenceError` 卡死；补上 `openid profile email offline_access`（与 pi-ai/Codex CLI 一致，offline_access 用于换 refresh_token）
-- **插件 id 残留**：`cordis.patch.yml` 与构建脚本的 client 模块 id 复制自底稿仍为 `bottom-info-bar`，导致插件挂载/加载错误；统一改为 `dsh-chatgpt-subscription`
+- **插件 id 残留**：`cordis.patch.yml` 与构建脚本的 client 模块 id 复制自底稿仍为 `dsh-bottom-info-bar`，导致插件挂载/加载错误；统一改为 `dsh-chatgpt-subscription`
 - **测试提取器**：纯函数提取时兄弟函数引用（如 `decodeJwtExp` 调 `decodeBase64Url`）无法解析导致测试崩溃；改为「常量 + 纯函数」共享作用域整体求值
 - **client 获取 React 方式（安全审计发现）**：原用 `window.React`，DSH 客户端环境无该全局，设置页会崩溃；改为与官方 client 包一致的 `require('react')`（seed 模块提供）
 
@@ -35,7 +35,7 @@
 
 - **废弃旧桥接方式**：不再读取 `~/.codex/auth.json` 作为自动绑定来源；绑定以官方 OAuth 授权为准（用户 2026-08-17 拍板「废弃这个方式，走官方的绑定方案」）
 - 提供商显示名统一为 **ChatGPT**（Codex 与 ChatGPT 已合并）
-- 本插件与 bottom-info-bar 职责分离：本插件 = 绑定 + 令牌维护；信息栏 = 只读令牌显示额度
+- 本插件与 dsh-bottom-info-bar 职责分离：本插件 = 绑定 + 令牌维护；信息栏 = 只读令牌显示额度
 
 ## 版本计划
 

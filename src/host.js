@@ -1,6 +1,6 @@
 // dsh-chatgpt-subscription — host half（静态 bundle 形态）
 // 业务：ChatGPT 订阅官方 OAuth 绑定 + 令牌看护 + openai-codex 路由注册
-// 独立插件：绑定/令牌管理；bottom-info-bar 只读令牌显示额度
+// 独立插件：绑定/令牌管理；dsh-bottom-info-bar 只读令牌显示额度
 import { existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { dirname, join } from 'node:path'

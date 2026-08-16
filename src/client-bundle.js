@@ -136,7 +136,7 @@ module.exports = {
           )
         ),
         h('p', { style: { fontSize: 12, color: 'var(--dsw-alias-label-tertiary)', marginTop: '1rem' } },
-          '说明：绑定由官方 OAuth 流程完成，令牌存储在 ~/.codex/auth.json（0600）。独立插件 dsh-chatgpt-subscription 负责维护令牌，bottom-info-bar 只读令牌显示额度。'
+          '说明：绑定由官方 OAuth 流程完成，令牌存储在 ~/.codex/auth.json（0600）。独立插件 dsh-chatgpt-subscription 负责维护令牌，dsh-bottom-info-bar 只读令牌显示额度。'
         )
       );
     }

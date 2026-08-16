@@ -26,7 +26,7 @@
 |---|---|---|---|
 | 1 | **client 获取 React 方式错误**：`var React = window.React`——DSH 客户端环境无 `window.React` 全局（官方 client 包与已发布插件均用 `require('react')`，由 seed 模块提供）；会导致设置页一打开即崩溃、「订阅」页完全无法渲染 | **高**（功能不可用） | 改为 `require('react')`（与官方机制一致） |
 | 2 | **缺失 `OAUTH_SCOPE` 常量**：`buildAuthorizeUrl` 引用未定义变量，点授权时 ReferenceError 卡死 | **高**（功能不可用） | 补上 `openid profile email offline_access` |
-| 3 | **插件 id 残留**：cordis.patch.yml 与 client 模块 id 为 `bottom-info-bar`（复制底稿残留），会导致挂载/加载错误 | **高**（无法安装） | 统一改为 `dsh-chatgpt-subscription` |
+| 3 | **插件 id 残留**：cordis.patch.yml 与 client 模块 id 为 `dsh-bottom-info-bar`（复制底稿残留），会导致挂载/加载错误 | **高**（无法安装） | 统一改为 `dsh-chatgpt-subscription` |
 | 4 | 测试提取器无法解析兄弟函数引用（decodeJwtExp→decodeBase64Url） | 中（测试基础设施） | 共享作用域整体求值 |
 | 5 | 测试覆盖缺口：`codexAccountIdFromJwt`/`buildOAuthAuthObject` 无断言 | 低 | 补 13 断言（测试 36→49） |
 | 6 | package.json `test` 脚本路径错误（`../tests/`） | 低 | 改为 `node tests/run-all.mjs` |

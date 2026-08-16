@@ -9,7 +9,7 @@
 - **ChatGPT 模型接入 DSH**：绑定后模型切换器出现提供商 **ChatGPT**（如 `gpt-5.6-terra`），选择即对话
 - **令牌看护**：JWT 感知自动续期（30 分钟周期），注入 DSH 凭据；失败保留上次正常状态
 - **绑定状态页**：已绑定/未绑定、令牌有效期、重新授权/解绑
-- **与 [bottom-info-bar](https://github.com/songoao25/bottom-info-bar) 配套**：信息栏读取本插件维护的令牌显示 ChatGPT 额度
+- **与 [dsh-bottom-info-bar](https://github.com/songoao25/dsh-bottom-info-bar) 配套**：信息栏读取本插件维护的令牌显示 ChatGPT 额度
 
 ## 安装
 

@@ -15,7 +15,7 @@
 
 ## 关键约束（不可违背）
 
-1. **插件 id / client 模块 id 一律 `dsh-chatgpt-subscription`**，禁止出现 `bottom-info-bar`（复制底稿残留会破坏挂载）
+1. **插件 id / client 模块 id 一律 `dsh-chatgpt-subscription`**，禁止出现 `dsh-bottom-info-bar`（复制底稿残留会破坏挂载）
 2. **env 前缀一律 `DSH_CHATGPT_*`**（AUTH / DATA_DIR / BIND_FILE / OAUTH_PORT / OAUTH_TIMEOUT_MS），测试隔离用
 3. **令牌铁律**：token 只存 `~/.codex/auth.json`（0600）与 DSH 凭据库；不打印、不进日志、不进错误信息、不进 git 历史；错误信息不得含 token 片段
 4. **绑定标记（codex-bind.json）是绑定唯一事实**：只有官方 OAuth 授权成功才写标记；codex CLI 登录态绝不自动使用
