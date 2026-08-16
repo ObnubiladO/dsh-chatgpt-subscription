@@ -1,4 +1,4 @@
-# dsh-chatgpt-subscription
+# ChatGPT 订阅插件
 
 [**English**](README.md) | **中文**
 
