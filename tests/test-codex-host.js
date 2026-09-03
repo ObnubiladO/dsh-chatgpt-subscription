@@ -230,7 +230,7 @@ function makeJwt(claims) {
   check('host 不管理搜索配置', !src.includes('SEARCH_SETTINGS_NAMESPACE') && !src.includes('setSearchMode'), true)
   check('host 包含单飞保护', src.includes('syncInFlight'), true)
   check('host 包含默认模型回滚保护', src.includes('restoreDefaultModel'), true)
-  check('host 拒绝自定义同名路由覆盖', src.includes('apiKeyEnv 不是 OPENAI_CODEX_API_KEY'), true)
+  check('host 拒绝自定义同名路由覆盖', src.includes('different apiKeyEnv than OPENAI_CODEX_API_KEY'), true)
   check('host 解绑移除自有路由', src.includes("path: ['providers', 'openai-codex'] }]"), true)
   check('host 不删除用户已有 Codex 路由', src.includes('同名用户路由只读不删不改'), true)
   check('host 只清理自有 Codex 凭据', src.includes('codexCredentialOwned') && src.includes('credentialManaged'), true)

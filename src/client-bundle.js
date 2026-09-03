@@ -53,7 +53,7 @@ module.exports = {
 
       // 加载状态 + 轮询
       var load = React.useCallback(function () {
-        rpc('getCodexBridgeStatus').then(function (s) { setStatus(s); }).catch(function (e) { setStatus({ ok: false, error: { message: '获取状态失败' } }); });
+        rpc('getCodexBridgeStatus').then(function (s) { setStatus(s); }).catch(function (e) { setStatus({ ok: false, error: { message: 'Could not load status' } }); });
       }, []);
 
       React.useEffect(function () {
@@ -74,7 +74,7 @@ module.exports = {
         setAuthorizing(true);
         rpc('startCodexOAuth').then(function (res) {
           if (!res.ok) {
-            alert('启动授权失败：' + (res.error && res.error.message || '未知错误'));
+            alert('Could not start authorization: ' + (res.error && res.error.message || 'Unknown error'));
             setAuthorizing(false);
             return;
           }
@@ -97,16 +97,16 @@ module.exports = {
             });
           }, 2000);
         }).catch(function (e) {
-          alert('启动授权异常：' + e.message);
+          alert('Could not start authorization: ' + e.message);
           setAuthorizing(false);
         });
       }, [authorizing]);
 
       // 解绑
       var handleUnbind = React.useCallback(function () {
-        if (!confirm('确定要解绑 ChatGPT 订阅吗？')) return;
+        if (!confirm('Disconnect your ChatGPT subscription?')) return;
         rpc('unbindCodex').then(function (res) {
-          if (res.ok) { load(); } else { alert('解绑失败：' + (res.error && res.error.message || '')); }
+          if (res.ok) { load(); } else { alert('Could not disconnect: ' + (res.error && res.error.message || '')); }
         });
       }, [load]);
 
@@ -117,7 +117,7 @@ module.exports = {
         return String(d.getFullYear()) + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
       }
       function fmtCountdown(ms) {
-        if (!ms || ms <= 0) return '已到期';
+        if (!ms || ms <= 0) return 'Expired';
         var totalSec = Math.floor(ms / 1000);
         var h = Math.floor(totalSec / 3600);
         var m = Math.floor((totalSec % 3600) / 60);
@@ -132,32 +132,32 @@ module.exports = {
       var btnDanger = { background: 'transparent', color: 'var(--dsw-alias-state-error-primary)', border: '1px solid var(--dsw-alias-state-error-primary)', borderRadius: 18, padding: '0 1rem', height: 32, cursor: 'pointer', fontSize: 13 };
       var btnSecondary = { background: 'transparent', color: 'var(--dsw-alias-label-primary)', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: 18, padding: '0 1rem', height: 32, cursor: 'pointer', fontSize: 13 };
 
-      if (!status) return h('div', { style: style }, h('p', null, '加载中…'));
+      if (!status) return h('div', { style: style }, h('p', null, 'Loading…'));
 
       var bound = status.bound;
       var errorMsg = (status.error && status.error.message) || '';
 
       return h('div', { style: style },
-        h('h2', { style: { marginTop: 0, fontSize: 18, fontWeight: 500 } }, 'ChatGPT 订阅'),
+        h('h2', { style: { marginTop: 0, fontSize: 18, fontWeight: 500 } }, 'ChatGPT Subscription'),
         h('div', { style: cardStyle },
           !bound ? h('div', null,
-            h('p', { style: { color: 'var(--dsw-alias-label-tertiary)', fontSize: 14 } }, '绑定后可在 DSH 中使用 ChatGPT Plus/Pro 订阅额度对话，并在底部信息栏查看剩余额度与重置时间。'),
-            h('button', { style: Object.assign({}, btnPrimary, { marginTop: '0.5rem' }), onClick: handleAuthorize, disabled: authorizing }, authorizing ? '授权中…' : '授权登录'),
+            h('p', { style: { color: 'var(--dsw-alias-label-tertiary)', fontSize: 14 } }, 'Connect your ChatGPT subscription to chat in DSH using your Plus/Pro quota. Install Bottom Info Bar to see remaining quota and reset times.'),
+            h('button', { style: Object.assign({}, btnPrimary, { marginTop: '0.5rem' }), onClick: handleAuthorize, disabled: authorizing }, authorizing ? 'Authorizing…' : 'Sign in with ChatGPT'),
             errorMsg ? h('p', { style: { color: 'var(--dsw-alias-state-error-primary)', fontSize: 13, marginTop: '0.5rem' } }, errorMsg) : null
           ) : h('div', null,
             h('div', { style: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: '0.8rem' } },
               h('span', { style: { width: 8, height: 8, borderRadius: '50%', background: 'var(--dsw-alias-state-success-primary)', display: 'inline-block' } }),
-              h('strong', null, '已绑定')
+              h('strong', null, 'Connected')
             ),
-            status.expiresAt ? h('p', { style: { fontSize: 13, color: 'var(--dsw-alias-label-secondary)' } }, '令牌有效期至：' + fmtTime(status.expiresAt) + '（剩余 ' + fmtCountdown(status.expiresAt - Date.now()) + '）') : null,
+            status.expiresAt ? h('p', { style: { fontSize: 13, color: 'var(--dsw-alias-label-secondary)' } }, 'Token expires: ' + fmtTime(status.expiresAt) + ' (' + (status.expiresAt <= Date.now() ? 'Expired' : fmtCountdown(status.expiresAt - Date.now()) + ' remaining') + ')') : null,
             h('div', { style: { display: 'flex', gap: 8, marginTop: '1rem' } },
-              h('button', { style: btnSecondary, onClick: handleAuthorize, disabled: authorizing }, '重新授权'),
-              h('button', { style: btnDanger, onClick: handleUnbind }, '解绑')
+              h('button', { style: btnSecondary, onClick: handleAuthorize, disabled: authorizing }, 'Reauthorize'),
+              h('button', { style: btnDanger, onClick: handleUnbind }, 'Disconnect')
             )
           )
         ),
         h('p', { style: { fontSize: 12, color: 'var(--dsw-alias-label-tertiary)', marginTop: '1rem' } },
-          '说明：绑定由官方 OAuth 流程完成，令牌存储在 ~/.codex/auth.json（0600）。独立插件 dsh-chatgpt-subscription 负责维护令牌，dsh-bottom-info-bar 只读令牌显示额度。本插件不管理联网搜索配置：搜索商由 DSH 的搜索配置单独指定（如 DeepSeek 搜索或第三方搜索服务），ChatGPT 订阅令牌绝不会被当作搜索凭据使用。'
+          'Sign-in uses the official OAuth flow. Tokens are stored in ~/.codex/auth.json (0600). This plugin maintains the tokens; dsh-bottom-info-bar only reads them to display quota. Web search is configured separately in DSH. Your ChatGPT subscription token is never used as a search credential.'
         )
       );
     }
@@ -171,7 +171,7 @@ module.exports = {
           name: 'settings.section',
           id: 'chatgpt-subscription',
           order: 12,
-          label: function () { return 'ChatGPT 订阅'; },
+          label: function () { return 'ChatGPT Subscription'; },
           children: {},
         },
         SubscriptionPage
