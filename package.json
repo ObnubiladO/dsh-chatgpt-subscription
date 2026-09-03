@@ -13,10 +13,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/songoao25/dsh-chatgpt-subscription.git"
+    "url": "https://github.com/SONGOAO25/dsh-chatgpt-subscription.git"
   },
-  "homepage": "https://github.com/songoao25/dsh-chatgpt-subscription",
-  "author": "songoao25",
+  "homepage": "https://github.com/SONGOAO25/dsh-chatgpt-subscription",
+  "author": "SONGOAO25",
   "license": "MIT",
   "type": "module",
   "main": "lib/index.js",
