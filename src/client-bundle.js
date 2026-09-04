@@ -1,7 +1,15 @@
 // dsh-chatgpt-subscription — client half：设置侧边栏「订阅」页（紧邻「模型」、图标一致）
 module.exports = {
-  inject: ['slots'],
+  inject: ['slots', 'locale'],
   async apply(ctx) {
+    const LOCALE_NAMESPACE = 'dsh-chatgpt-subscription';
+    const LOCALES = /*__LOCALES__*/{};
+    ctx.effect(function () { return ctx.locale.register(LOCALE_NAMESPACE, LOCALES); }, 'subscription: dictionaries');
+    const t = ctx.locale.bind(LOCALE_NAMESPACE);
+    // Existing host snapshots carry text, not message keys. Translate known
+    // messages at render time too, so a cached status follows switches.
+    /*__HOST_TEXT__*/
+    function hostText(message) { return localizeHostText(message, t, LOCALES); }
     // slots 服务等待就绪（最多 18s）
     let slots = ctx.slots || ctx.get('slots');
     for (let i = 0; slots === undefined && i < 60; i++) {
@@ -53,7 +61,7 @@ module.exports = {
 
       // 加载状态 + 轮询
       var load = React.useCallback(function () {
-        rpc('getCodexBridgeStatus').then(function (s) { setStatus(s); }).catch(function (e) { setStatus({ ok: false, error: { message: 'Could not load status' } }); });
+        rpc('getCodexBridgeStatus').then(function (s) { setStatus(s); }).catch(function (e) { setStatus({ ok: false, error: { message: t('ui.couldNotLoadStatus') } }); });
       }, []);
 
       React.useEffect(function () {
@@ -74,7 +82,7 @@ module.exports = {
         setAuthorizing(true);
         rpc('startCodexOAuth').then(function (res) {
           if (!res.ok) {
-            alert('Could not start authorization: ' + (res.error && res.error.message || 'Unknown error'));
+            alert(t('ui.couldNotStartAuthorization') + hostText(res.error && res.error.message || t('ui.unknownError')));
             setAuthorizing(false);
             return;
           }
@@ -97,16 +105,16 @@ module.exports = {
             });
           }, 2000);
         }).catch(function (e) {
-          alert('Could not start authorization: ' + e.message);
+          alert(t('ui.couldNotStartAuthorization.handleAuthorize', { message: e.message }));
           setAuthorizing(false);
         });
       }, [authorizing]);
 
       // 解绑
       var handleUnbind = React.useCallback(function () {
-        if (!confirm('Disconnect your ChatGPT subscription?')) return;
+        if (!confirm(t('ui.disconnectYourChatGPTSubscription'))) return;
         rpc('unbindCodex').then(function (res) {
-          if (res.ok) { load(); } else { alert('Could not disconnect: ' + (res.error && res.error.message || '')); }
+          if (res.ok) { load(); } else { alert(t('ui.couldNotDisconnect', { value: hostText(res.error && res.error.message || '') })); }
         });
       }, [load]);
 
@@ -117,7 +125,7 @@ module.exports = {
         return String(d.getFullYear()) + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
       }
       function fmtCountdown(ms) {
-        if (!ms || ms <= 0) return 'Expired';
+        if (!ms || ms <= 0) return t('ui.expired');
         var totalSec = Math.floor(ms / 1000);
         var h = Math.floor(totalSec / 3600);
         var m = Math.floor((totalSec % 3600) / 60);
@@ -132,32 +140,32 @@ module.exports = {
       var btnDanger = { background: 'transparent', color: 'var(--dsw-alias-state-error-primary)', border: '1px solid var(--dsw-alias-state-error-primary)', borderRadius: 18, padding: '0 1rem', height: 32, cursor: 'pointer', fontSize: 13 };
       var btnSecondary = { background: 'transparent', color: 'var(--dsw-alias-label-primary)', border: '1px solid var(--dsw-alias-border-l2)', borderRadius: 18, padding: '0 1rem', height: 32, cursor: 'pointer', fontSize: 13 };
 
-      if (!status) return h('div', { style: style }, h('p', null, 'Loading…'));
+      if (!status) return h('div', { style: style }, h('p', null, t('ui.loading')));
 
       var bound = status.bound;
-      var errorMsg = (status.error && status.error.message) || '';
+      var errorMsg = hostText((status.error && status.error.message) || '');
 
       return h('div', { style: style },
-        h('h2', { style: { marginTop: 0, fontSize: 18, fontWeight: 500 } }, 'ChatGPT Subscription'),
+        h('h2', { style: { marginTop: 0, fontSize: 18, fontWeight: 500 } }, t('ui.chatgptSubscription')),
         h('div', { style: cardStyle },
           !bound ? h('div', null,
-            h('p', { style: { color: 'var(--dsw-alias-label-tertiary)', fontSize: 14 } }, 'Connect your ChatGPT subscription to chat in DSH using your Plus/Pro quota. Install Bottom Info Bar to see remaining quota and reset times.'),
-            h('button', { style: Object.assign({}, btnPrimary, { marginTop: '0.5rem' }), onClick: handleAuthorize, disabled: authorizing }, authorizing ? 'Authorizing…' : 'Sign in with ChatGPT'),
+            h('p', { style: { color: 'var(--dsw-alias-label-tertiary)', fontSize: 14 } }, t('ui.connectYourChatGPTSubscriptionTo')),
+            h('button', { style: Object.assign({}, btnPrimary, { marginTop: '0.5rem' }), onClick: handleAuthorize, disabled: authorizing }, authorizing ? t('ui.authorizing') : t('ui.signInWithChatGPT')),
             errorMsg ? h('p', { style: { color: 'var(--dsw-alias-state-error-primary)', fontSize: 13, marginTop: '0.5rem' } }, errorMsg) : null
           ) : h('div', null,
             h('div', { style: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: '0.8rem' } },
               h('span', { style: { width: 8, height: 8, borderRadius: '50%', background: 'var(--dsw-alias-state-success-primary)', display: 'inline-block' } }),
-              h('strong', null, 'Connected')
+              h('strong', null, t('ui.connected'))
             ),
-            status.expiresAt ? h('p', { style: { fontSize: 13, color: 'var(--dsw-alias-label-secondary)' } }, 'Token expires: ' + fmtTime(status.expiresAt) + ' (' + (status.expiresAt <= Date.now() ? 'Expired' : fmtCountdown(status.expiresAt - Date.now()) + ' remaining') + ')') : null,
+            status.expiresAt ? h('p', { style: { fontSize: 13, color: 'var(--dsw-alias-label-secondary)' } }, t(status.expiresAt <= Date.now() ? 'ui.tokenExpiredAt' : 'ui.tokenExpires', { at: fmtTime(status.expiresAt), remaining: fmtCountdown(status.expiresAt - Date.now()) })) : null,
             h('div', { style: { display: 'flex', gap: 8, marginTop: '1rem' } },
-              h('button', { style: btnSecondary, onClick: handleAuthorize, disabled: authorizing }, 'Reauthorize'),
-              h('button', { style: btnDanger, onClick: handleUnbind }, 'Disconnect')
+              h('button', { style: btnSecondary, onClick: handleAuthorize, disabled: authorizing }, t('ui.reauthorize')),
+              h('button', { style: btnDanger, onClick: handleUnbind }, t('ui.disconnect'))
             )
           )
         ),
         h('p', { style: { fontSize: 12, color: 'var(--dsw-alias-label-tertiary)', marginTop: '1rem' } },
-          'Sign-in uses the official OAuth flow. Tokens are stored in ~/.codex/auth.json (0600). This plugin maintains the tokens; dsh-bottom-info-bar only reads them to display quota. Web search is configured separately in DSH. Your ChatGPT subscription token is never used as a search credential.'
+          t('ui.signInUsesTheOfficial')
         )
       );
     }
@@ -170,8 +178,9 @@ module.exports = {
         {
           name: 'settings.section',
           id: 'chatgpt-subscription',
+          locale: LOCALE_NAMESPACE,
           order: 12,
-          label: function () { return 'ChatGPT Subscription'; },
+          label: function () { return t('ui.chatgptSubscription'); },
           children: {},
         },
         SubscriptionPage
